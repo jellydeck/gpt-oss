@@ -1,7 +1,7 @@
 vllm==0.8.3
 transformers
 bitsandbytes==0.41.3
-fastapi==0.104.1
+fastapi
 uvicorn[standard]==0.24.0
 pydantic==2.5.0
 redis==5.0.1
