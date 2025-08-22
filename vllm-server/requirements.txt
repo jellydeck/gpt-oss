@@ -3,7 +3,7 @@ transformers
 bitsandbytes==0.41.3
 fastapi
 uvicorn[standard]==0.24.0
-pydantic==2.5.0
+pydantic
 redis==5.0.1
 structlog==23.2.0
 torch==2.5.1
