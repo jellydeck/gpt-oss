@@ -1,4 +1,5 @@
-import json, aioredis
+import json
+import redis.asyncio as aioredis
 
 class CacheManager:
     def __init__(self, url, ttl=3600):
