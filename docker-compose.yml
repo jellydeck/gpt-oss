@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s; timeout: 5s; retries: 5; start_period: 30s
+
+  vllm-server:
+    build: ./vllm-server
+    ports:
+      - "8001:8001"
+    volumes:
+      - model_data:/data/models
+      - huggingface_cache:/root/.cache/huggingface
+    environment:
+      MODEL_NAME: openai/gpt-oss-20b-awq
+      LOAD_IN_4BIT: "true"
+      QUANTIZATION_CONFIG: awq
+      MAX_MODEL_LEN: 32768
+      MAX_BATCH_SIZE: 8
+      REDIS_URL: redis://redis:6379
+      HOST: 0.0.0.0
+      PORT: 8001
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s; timeout: 10s; retries: 3; start_period: 60s
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      VLLM_URL: http://vllm-server:8001
+      REDIS_URL: redis://redis:6379
+      CACHE_TTL: 3600
+      HOST: 0.0.0.0
+      PORT: 8000
+    depends_on:
+      vllm-server:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s; 
+      timeout: 5s; 
+      retries: 3; 
+      start_period: 30s
+
+volumes:
+  redis_data:
+  model_data:
+  huggingface_cache:
