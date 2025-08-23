@@ -1,1 +1,4 @@
-vllm==0.10.1.1
+# requirements.txt
+torch --extra-index-url https://download.pytorch.org/whl/cpu
+torchvision --extra-index-url https://download.pytorch.org/whl/cpu
+pyarrow

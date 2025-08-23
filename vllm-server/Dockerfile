@@ -1,27 +1,35 @@
+# Dockerfile
 FROM python:3.11-slim
 
-# System deps
-RUN apt-get update && apt-get install -y curl git && rm -rf /var/lib/apt/lists/*
+# install build tools and dependencies for vLLM CPU backend
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential git curl wget ca-certificates \
+      gcc-12 g++-12 libtcmalloc-minimal4 libnuma-dev \
+      libffmpeg-dev libsm6 libxext6 libgl1 jq lsof && \
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10 --slave /usr/bin/g++ g++ /usr/bin/g++-12 && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+
+# copy requirements
 COPY requirements.txt .
 
-# Install Python deps
-RUN python -m pip install --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir "vllm[all]" huggingface_hub
+# install Python deps
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt
 
-# Expose vLLM port
-EXPOSE 8000
+# clone and build vLLM CPU backend
+RUN git clone https://github.com/vllm-project/vllm.git /vllm_source && \
+    cd /vllm_source && \
+    VLLM_TARGET_DEVICE=cpu python setup.py install && \
+    cd /app && rm -rf /vllm_source
 
-# Healthcheck for Railway
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD curl -f http://localhost:8000/v1/models || exit 1
-
-# Hugging Face cache path (mount volume here on Railway)
-ENV HF_HOME=/root/.cache/huggingface
+# expose port and set env defaults
+EXPOSE 8001
 ENV MODEL_NAME=openai/gpt-oss-20b
-ENV VLLM_DEVICE=cpu
+ENV HF_HOME=/root/.cache/huggingface
+ENV VLLM_LOGGING_LEVEL=INFO
 
-# Run vLLM serve with GPT-OSS 20B
-CMD ["sh", "-c", "vllm serve $MODEL_NAME --host 0.0.0.0 --port 8000 --device cpu"]
+# launch vLLM server on CPU
+CMD ["sh", "-c", "vllm serve --host 0.0.0.0 --port 8001 --device cpu $MODEL_NAME"]
