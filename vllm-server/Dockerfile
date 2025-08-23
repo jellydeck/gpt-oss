@@ -23,4 +23,5 @@ ENV VLLM_DEVICE=cpu
 ENV HF_HOME=/root/.cache/huggingface
 
 # Run vLLM serve with model from env
-CMD ["sh", "-c", "vllm serve --host 0.0.0.0 --port 8000 $MODEL_NAME"]
+CMD ["sh", "-c", "vllm serve --host 0.0.0.0 --port 8000 --device cpu $MODEL_NAME"]
+
