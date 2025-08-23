@@ -1,3 +1,7 @@
+ARG VLLM_CPU_DISABLE_AVX512=false
+ARG VLLM_CPU_AVX512BF16=true
+ARG VLLM_CPU_AVX512VNNI=true
+
 FROM public.ecr.aws/q9t5s3a7/vllm-cpu-release-repo:v0.10.1
 
 WORKDIR /app
