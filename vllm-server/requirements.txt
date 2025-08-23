@@ -1,10 +1,2 @@
-vllm==0.10.1.1
-transformers==4.55.4    # 4.53+ is referenced in vLLM docs for some models
-bitsandbytes==0.45.2    # safe with torch 2.6–2.7 series
-fastapi==0.116.1        # minor bump ok; vLLM itself also updates fastapi dep
-uvicorn[standard]==0.24.0
-pydantic==2.11.0
-redis==5.0.1
-structlog==23.2.0
-torch==2.7.1            # vLLM 0.10.x wheels pull this; keep aligned
-triton==3.3.1           # paired with torch 2.7.1
+fastapi[standard]==0.116.1
+vllm==0.10.1
