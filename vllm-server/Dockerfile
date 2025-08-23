@@ -1,5 +1,5 @@
 # Use the official vLLM image (replace tag with latest stable)
-FROM vllm/vllm:latest
+FROM vllm/vllm-openai:latest
 
 # Set working directory (optional)
 WORKDIR /app
