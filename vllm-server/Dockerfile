@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8001
 
 # Default envs (Railway can override at runtime)
-ENV MODEL_NAME=facebook/opt-1.3b
+ENV MODEL_NAME=openai/gpt-oss-20b
 ENV HF_HOME=/root/.cache/huggingface
 ENV VLLM_LOGGING_LEVEL=INFO
 
