@@ -1,4 +1,4 @@
-FROM public.ecr.aws/q9t5s3a7/vllm-cpu-release-repo:latest
+FROM public.ecr.aws/q9t5s3a7/vllm-cpu-release-repo:v0.10.1
 
 WORKDIR /app
 
