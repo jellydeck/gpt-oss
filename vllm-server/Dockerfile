@@ -15,4 +15,4 @@ ENV VLLM_CPU_OMP_THREADS_BIND=auto
 ENV VLLM_LOGGING_LEVEL=INFO
 
 # default command uses the vllm CLI directly
-CMD ["vllm", "serve", "--host", "0.0.0.0", "--port", "8000", "--device", "cpu", "openai/gpt-oss-20b", "--dtype", "bfloat16"]
+CMD ["sh", "-c", "vllm serve $MODEL_NAME --host 0.0.0.0 --port 8000 --device cpu --dtype bfloat16"]
