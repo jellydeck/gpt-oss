@@ -32,8 +32,6 @@ jobs:
           file: ./api-gateway/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build and Push vllm-server Image
         uses: docker/build-push-action@v5
@@ -42,5 +40,3 @@ jobs:
           file: ./vllm-server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/vllm-server:${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
